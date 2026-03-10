@@ -84,7 +84,7 @@ const year = ref('')
 
 const onSearch = () => {
   if (query.value.trim()) {
-    // Emitimos el objeto al componente padre (index.vue)
+    
     emit('search-movies', {
       query: query.value,
       tipo: tipo.value,

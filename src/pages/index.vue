@@ -1,45 +1,45 @@
 <template>
-      <v-container class="pa-8">
-        <v-row>
-          <v-col cols="12">
-            <h1 class="text-h3 mb-6 text-center">🎬 Buscador de Películas</h1>
-          </v-col>
-        </v-row>
+  <v-container class="pa-8">
+    <v-row>
+      <v-col cols="12">
+        <h1 class="text-h3 mb-6 text-center">🎬 Buscador de Películas</h1>
+      </v-col>
+    </v-row>
 
-        <v-row>
-          <v-col cols="12" md="4">
-            <movie-search 
-              @search-movies="handleSearch"
-              @clear-results="handleClear"
-            />
-          </v-col>
+    <v-row>
+      <v-col cols="12" md="4">
+        <movie-search 
+          @search-movies="buscarPeliculas"
+          @clear-results="handleClear"
+        />
+      </v-col>
 
-          <v-col cols="12" md="8">
-            <loading-spinner :loading="loading" />
-            
-            <movie-list 
-              v-if="movies.length > 0"
-              :movies="movies"
-              @select-movie="handleMovieSelect"
-            />
+      <v-col cols="12" md="8">
+        <loading-spinner :loading="cargando" />
+        
+        <movie-list 
+          v-if="peliculas.length > 0"
+          :peliculas="peliculas"
+          @select-movie="seleccionarPelicula"
+        />
 
-            <movie-details 
-              v-if="selectedMovie"
-              :movie="selectedMovie"
-              @close-details="handleCloseDetails"
-            />
+        <movie-details 
+          v-if="peliculaSeleccionada"
+          :movie="peliculaSeleccionada"
+          @close-details="peliculaSeleccionada = null"
+        />
 
-            <v-alert
-              v-if="error"
-              type="error"
-              class="mt-4"
-            >
-              {{ error }}
-            </v-alert>
-          </v-col>
-        </v-row>
-      </v-container>
-    </template>
+        <v-alert
+          v-if="error"
+          type="error"
+          class="mt-4"
+        >
+          {{ error }}
+        </v-alert>
+      </v-col>
+    </v-row>
+  </v-container>
+</template>
 
 <script setup>
 import { ref } from 'vue'
@@ -49,50 +49,47 @@ import MovieDetails from '../components/MovieDetails.vue'
 import LoadingSpinner from '../components/LoadingSpinner.vue'
 import { searchMovies, getMovieDetails } from '../services/movieApi'
 
-const movies = ref([])
-const selectedMovie = ref(null)
-const loading = ref(false)
+
+const peliculas = ref([])
+const peliculaSeleccionada = ref(null)
+const cargando = ref(false)
 const error = ref('')
 
-const handleSearch = async (searchParams) => {
-  loading.value = true
+const buscarPeliculas = async (searchParams) => {
+  cargando.value = true
   error.value = ''
   
   try {
     const response = await searchMovies(searchParams)
     if (response.Search) {
-      movies.value = response.Search
+      peliculas.value = response.Search
     } else {
-      movies.value = []
+      peliculas.value = []
       error.value = 'No se encontraron películas'
     }
   } catch (err) {
     error.value = 'Error al buscar películas'
     console.error(err)
   } finally {
-    loading.value = false
+    cargando.value = false
   }
 }
 
-const handleMovieSelect = async (imdbID) => {
-  loading.value = true
+const seleccionarPelicula = async (imdbID) => {
+  cargando.value = true
   try {
-    selectedMovie.value = await getMovieDetails(imdbID)
+    peliculaSeleccionada.value = await getMovieDetails(imdbID)
   } catch (err) {
     error.value = 'Error al cargar detalles de la película'
     console.error(err)
   } finally {
-    loading.value = false
+    cargando.value = false
   }
 }
 
-const handleCloseDetails = () => {
-  selectedMovie.value = null
-}
-
 const handleClear = () => {
-  movies.value = []
-  selectedMovie.value = null
+  peliculas.value = []
+  peliculaSeleccionada.value = null
   error.value = ''
 }
 </script>
