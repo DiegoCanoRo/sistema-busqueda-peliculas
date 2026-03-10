@@ -42,18 +42,32 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import MovieSearch from '../components/MovieSearch.vue'
 import MovieList from '../components/MovieList.vue'
 import MovieDetails from '../components/MovieDetails.vue'
 import LoadingSpinner from '../components/LoadingSpinner.vue'
 import { searchMovies, getMovieDetails } from '../services/movieApi'
 
-
 const peliculas = ref([])
 const peliculaSeleccionada = ref(null)
 const cargando = ref(false)
 const error = ref('')
+
+//para mostrar contenido inicial y que el usuario no vea la pantalla vacía.
+onMounted(async () => {
+  console.log('Componente Index montado. Ejecutando búsqueda inicial...');
+  await buscarPeliculas({ query: 'Avengers', type: 'movie' });
+})
+
+
+//para limpiar el estado y liberar memoria al navegar a "About".
+onBeforeUnmount(() => {
+  console.log('Limpiando datos antes de desmontar el componente...');
+  peliculas.value = [];
+  peliculaSeleccionada.value = null;
+})
 
 const buscarPeliculas = async (searchParams) => {
   cargando.value = true
