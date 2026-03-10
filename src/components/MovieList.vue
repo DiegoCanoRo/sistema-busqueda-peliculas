@@ -19,7 +19,7 @@
         </v-img>
 
 
-                <v-card-item>
+        <v-card-item>
           <v-card-title class="text-subtitle-1 font-weight-bold text-white">
             {{ pelicula.Title }}
           </v-card-title>
