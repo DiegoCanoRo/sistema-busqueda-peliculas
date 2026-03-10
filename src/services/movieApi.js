@@ -1,35 +1,30 @@
-import axios from 'axios'
-
-const API_KEY = '136a2087' // Reemplaza con tu API key
+const API_KEY = '136a2087'
 const BASE_URL = 'https://www.omdbapi.com/'
 
-
-const api = axios.create({
-  baseURL: BASE_URL,
-  params: {
-    apikey: API_KEY
+//usando fetch() en lugar de axios
+export const searchMovies = async ({ query, type, year }) => {
+  //construcción manual de la URL con parámetros
+  const url = `${BASE_URL}?apikey=${API_KEY}&s=${query}&type=${type}${year ? `&y=${year}` : ''}`
+  
+  try {
+    const response = await fetch(url)
+    if (!response.ok) throw new Error('Error en la red')
+    return await response.json()
+  } catch (error) {
+    console.error("Error en searchMovies (fetch):", error)
+    throw error
   }
-})
-
-
-export const searchMovies = async (params) => {
-  const response = await api.get('', {
-    params: {
-      s: params.query,
-      type: params.type || 'movie',
-      y: params.year || '',
-      page: params.page || 1
-    }
-  })
-  return response.data
 }
 
 export const getMovieDetails = async (imdbID) => {
-  const response = await api.get('', {
-    params: {
-      i: imdbID,
-      plot: 'full'
-    }
-  })
-  return response.data
+  const url = `${BASE_URL}?apikey=${API_KEY}&i=${imdbID}&plot=full`
+  
+  try {
+    const response = await fetch(url)
+    if (!response.ok) throw new Error('Error en la red')
+    return await response.json()
+  } catch (error) {
+    console.error("Error en getMovieDetails (fetch):", error)
+    throw error
+  }
 }
