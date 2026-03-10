@@ -43,11 +43,11 @@
 
 <script setup>
 import { ref } from 'vue'
-import MovieSearch from './components/MovieSearch.vue'
-import MovieList from './components/MovieList.vue'
-import MovieDetails from './components/MovieDetails.vue'
-import LoadingSpinner from './components/LoadingSpinner.vue'
-import { searchMovies, getMovieDetails } from './services/movieApi'
+import MovieSearch from '../components/MovieSearch.vue'
+import MovieList from '../components/MovieList.vue'
+import MovieDetails from '../components/MovieDetails.vue'
+import LoadingSpinner from '../components/LoadingSpinner.vue'
+import { searchMovies, getMovieDetails } from '../services/movieApi'
 
 const movies = ref([])
 const selectedMovie = ref(null)
